@@ -16,9 +16,11 @@ public class Sketch extends PApplet {
   int mouseXToGrid;
   int mouseYToGrid;
   boolean gridPressed = false;
+  boolean gridPrint = false;
   int selectedCount;
   int rowSelectCount;
   int columnSelectCount;
+  int continuousGrid;
 
   boolean reset;
 
@@ -47,6 +49,7 @@ public class Sketch extends PApplet {
   public void draw() {
 
 	  drawGrid();
+    gridData();
   }
 
   public void drawGrid(){
@@ -113,22 +116,13 @@ public class Sketch extends PApplet {
 
             intGrid[ROWS+1][COLUMNS] = 0;
             selectedCount --;
+            
           }
 
           // text outputs
           println( "Total of " + selectedCount + " cells are selected.");
           
-          for (int i = 0; i < COLUMN_COUNT; i++){
-            for (int j = 0; j < ROW_COUNT; j++){
-      
-              if (intGrid[j][i] == 1){
-                rowSelectCount ++;
-              }
-            }
-            println("Row " + i + " has " + rowSelectCount + " cells selected.");
-            rowSelectCount = 0;
-      
-          }
+
           gridPressed = false;
         }
 
@@ -154,17 +148,84 @@ public class Sketch extends PApplet {
               intGrid[j][i] = 0;
             }
           }
+
           selectedCount = 0;
+          continuousGrid = 0;
+          rowSelectCount = 0;
+          columnSelectCount = 0;
         }
       }
     }
   }
+  
+  public void gridData(){
+
+    if (gridPrint){
+
+      for (int i = 0; i < ROW_COUNT; i++){
+        for (int j = 0; j < COLUMN_COUNT; j++){
+  
+          if (intGrid[i][j] == 1){
+
+            rowSelectCount ++;
+          }
+
+          if (j < COLUMN_COUNT - 1){
+
+            if (intGrid[i][j] == 1 && intGrid[i][j+1] == 1){
+
+              continuousGrid ++;
+            }
+          }
+          
+          if (j > 0 && j < COLUMN_COUNT){
+
+            if (intGrid[i][j-1] == 1 && intGrid[i][j] == 1 && j == COLUMN_COUNT - 1){
+
+              continuousGrid ++;
+            } 
+
+            else if (intGrid[i][j-1] == 1 && intGrid[i][j] == 1 && intGrid[i][j+1] == 0 && j < COLUMN_COUNT - 1){
+
+              continuousGrid ++;
+            }
+          }
+        }
+
+        if (rowSelectCount > 2 && continuousGrid > 0){
+
+          println("There are " + continuousGrid + " continuous blocks selected on row " + i + ".");
+        }
+
+        println("Row " + i + " has " + rowSelectCount + " cells selected.");
+
+        rowSelectCount = 0;
+        continuousGrid = 0;
+      }
+
+      for (int i = 0; i < COLUMN_COUNT; i++){
+        for (int j = 0; j < ROW_COUNT; j ++){
+
+          if (intGrid[j][i] == 1){
+
+            columnSelectCount ++;
+          }
+        }
+
+        println("Column " + i + " has " + columnSelectCount + " cells selected.");
+        columnSelectCount = 0;
+      }
+
+      gridPrint = false;
+    }
+  }
+
   public void mousePressed(){
-    println("click, mouse coordinates: (" + mouseX + ", " + mouseY + "); grid coordinates: (row: " + mouseY / (CELL_HEIGHT + MARGIN) + ", column:" + mouseX / (CELL_WIDTH + MARGIN) + ")");
-    
+  
     mouseXToGrid = mouseX / (CELL_WIDTH + MARGIN);
     mouseYToGrid = mouseY / (CELL_HEIGHT + MARGIN);
     gridPressed = true;
+    gridPrint = true;
   }
 
   // additional stuff for fun
