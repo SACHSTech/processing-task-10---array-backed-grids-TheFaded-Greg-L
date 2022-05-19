@@ -1,5 +1,9 @@
 import processing.core.PApplet;
 
+/**
+ * A program, "Sketch.java", that draws an interactive grid that outputs data and allows for a better understanding of 2D arrays.
+ * @author G. Lui
+ */
 public class Sketch extends PApplet {
 
 	
@@ -15,8 +19,10 @@ public class Sketch extends PApplet {
 
   int mouseXToGrid;
   int mouseYToGrid;
+
   boolean gridPressed = false;
   boolean gridPrint = false;
+
   int selectedCount;
   int rowSelectCount;
   int columnSelectCount;
@@ -26,6 +32,7 @@ public class Sketch extends PApplet {
 
   // array data
   int[][] intGrid = new int[ROW_COUNT][COLUMN_COUNT];
+
   /**
    * Called once at the beginning of execution, put your size all in this method
    */
@@ -52,12 +59,19 @@ public class Sketch extends PApplet {
     gridData();
   }
 
+  /**
+   * 
+   * Draws the grid and calculates values within the intGrid Integer Array.
+   * @author G. Lui
+   */
   public void drawGrid(){
+
     for (int COLUMNS = 0; COLUMNS < COLUMN_COUNT; COLUMNS++){
       for (int ROWS = 0; ROWS < ROW_COUNT; ROWS++){
 
         if (gridPressed && mouseXToGrid == COLUMNS && mouseYToGrid == ROWS){
 
+          // Middle Block
           if (intGrid[ROWS][COLUMNS] == 0){
 
             intGrid[ROWS][COLUMNS] = 1;
@@ -70,6 +84,7 @@ public class Sketch extends PApplet {
             selectedCount --;
           }
 
+          // Left Most Block
           if (COLUMNS > 0 && intGrid[ROWS][COLUMNS-1] == 0){
 
             intGrid[ROWS][COLUMNS-1] = 1;
@@ -82,6 +97,7 @@ public class Sketch extends PApplet {
             selectedCount --;
           }
 
+          // Right Most Block
           if (COLUMNS < COLUMN_COUNT - 1 && intGrid[ROWS][COLUMNS+1] == 0){
 
             intGrid[ROWS][COLUMNS+1] = 1;
@@ -94,6 +110,7 @@ public class Sketch extends PApplet {
             selectedCount --;
           }
 
+          // Top Most Block
           if (ROWS > 0 && intGrid[ROWS-1][COLUMNS] == 0){
 
             intGrid[ROWS-1][COLUMNS] = 1;
@@ -106,6 +123,7 @@ public class Sketch extends PApplet {
             selectedCount --;
           }
 
+          // Bottom Most Block
           if (ROWS < ROW_COUNT - 1 && intGrid[ROWS+1][COLUMNS] == 0){
 
             intGrid[ROWS+1][COLUMNS] = 1;
@@ -149,6 +167,7 @@ public class Sketch extends PApplet {
             }
           }
 
+          // reset output values
           selectedCount = 0;
           continuousGrid = 0;
           rowSelectCount = 0;
@@ -158,6 +177,11 @@ public class Sketch extends PApplet {
     }
   }
   
+  /**
+   * 
+   * Outputs data for the Rows, Columns, and Continous Selected Blocks.
+   * @author G. Lui
+   */
   public void gridData(){
 
     if (gridPrint){
@@ -165,11 +189,13 @@ public class Sketch extends PApplet {
       for (int i = 0; i < ROW_COUNT; i++){
         for (int j = 0; j < COLUMN_COUNT; j++){
   
+          // Selected In Row Counter
           if (intGrid[i][j] == 1){
 
             rowSelectCount ++;
           }
 
+          // Continuous In A Row Counter
           if (j < COLUMN_COUNT - 1){
 
             if (intGrid[i][j] == 1 && intGrid[i][j+1] == 1){
@@ -192,13 +218,16 @@ public class Sketch extends PApplet {
           }
         }
 
+        // Output and Print The # of Continuous Selected Blocks.
         if (rowSelectCount > 2 && continuousGrid > 0){
 
           println("There are " + continuousGrid + " continuous blocks selected on row " + i + ".");
         }
 
+        // Outputs and Print The # of Selected Blocks In one Row.
         println("Row " + i + " has " + rowSelectCount + " cells selected.");
 
+        // reset values per row
         rowSelectCount = 0;
         continuousGrid = 0;
       }
@@ -212,7 +241,10 @@ public class Sketch extends PApplet {
           }
         }
 
+        // Outputs and Print The # of Selected Blocks In on Column.
         println("Column " + i + " has " + columnSelectCount + " cells selected.");
+
+        // reset the column counter per column.
         columnSelectCount = 0;
       }
 
